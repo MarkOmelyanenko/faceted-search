@@ -1,0 +1,224 @@
+<div class="layout">
+  <header class="header">
+    <h1 class="title">Product search</h1>
+    <div class="search-row">
+      <input
+        class="search-input"
+        type="search"
+        placeholder="Search products…"
+        [formControl]="searchControl"
+        aria-label="Search products"
+      />
+      @if (loading) {
+        <span class="badge">Loading…</span>
+      }
+    </div>
+  </header>
+
+  @if (error) {
+    <div class="banner error" role="alert">{{ error }}</div>
+  }
+
+  <div class="body">
+    <aside class="facets" aria-label="Filters">
+      <section class="facet-block">
+        <div class="facet-heading">
+          <h2 class="facet-title">Brand</h2>
+          <button
+            type="button"
+            class="facet-reset"
+            (click)="clearBrands()"
+            [disabled]="!hasBrandsSelected()"
+            aria-label="Clear all brand filters"
+          >
+            Reset
+          </button>
+        </div>
+        <div class="facet-search">
+          <input
+            class="facet-input"
+            type="search"
+            placeholder="Find a brand…"
+            [formControl]="brandQueryControl"
+            aria-label="Search brands"
+          />
+          @if (brandSuggestLoading) {
+            <span class="muted small">Searching…</span>
+          }
+          @if (brandSuggest.length) {
+            <ul class="suggest-list">
+              @for (b of brandSuggest; track b.value) {
+                <li>
+                  <label
+                    class="suggest-item"
+                    [class.suggest-item--selected]="b.selected"
+                  >
+                    <input
+                      type="checkbox"
+                      class="facet-checkbox"
+                      [checked]="b.selected"
+                      (click)="$event.preventDefault(); toggleBrand(b.value)"
+                    />
+                    <span class="facet-label">{{ b.label }}</span>
+                    <span class="facet-count">{{ b.count }}</span>
+                  </label>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        @if (result?.facets?.brands?.length) {
+          <ul class="facet-list facet-list--tight">
+            @for (b of result!.facets.brands; track b.value) {
+              <li>
+                <label
+                  class="facet-item"
+                  [class.facet-item--selected]="b.selected"
+                >
+                  <input
+                    type="checkbox"
+                    class="facet-checkbox"
+                    [checked]="b.selected"
+                    (click)="$event.preventDefault(); toggleBrand(b.value)"
+                  />
+                  <span class="facet-label">{{ b.label }}</span>
+                  <span class="facet-count">{{ b.count }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+        } @else if (!loading && result) {
+          <p class="muted">No brands in this result set.</p>
+        }
+      </section>
+
+      <section class="facet-block">
+        <div class="facet-heading">
+          <h2 class="facet-title">Category</h2>
+          <button
+            type="button"
+            class="facet-reset"
+            (click)="clearCategories()"
+            [disabled]="!hasCategoriesSelected()"
+            aria-label="Clear all category filters"
+          >
+            Reset
+          </button>
+        </div>
+        <div class="facet-search">
+          <input
+            class="facet-input"
+            type="search"
+            placeholder="Find a category…"
+            [formControl]="categoryQueryControl"
+            aria-label="Search categories"
+          />
+          @if (categorySuggestLoading) {
+            <span class="muted small">Searching…</span>
+          }
+          @if (categorySuggest.length) {
+            <ul class="suggest-list">
+              @for (c of categorySuggest; track c.value) {
+                <li>
+                  <label
+                    class="suggest-item"
+                    [class.suggest-item--selected]="c.selected"
+                  >
+                    <input
+                      type="checkbox"
+                      class="facet-checkbox"
+                      [checked]="c.selected"
+                      (click)="$event.preventDefault(); toggleCategory(c.value)"
+                    />
+                    <span class="facet-label">{{ c.label }}</span>
+                    <span class="facet-count">{{ c.count }}</span>
+                  </label>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+        @if (result?.facets?.categories?.length) {
+          <ul class="facet-list facet-list--tight">
+            @for (c of result!.facets.categories; track c.value) {
+              <li>
+                <label
+                  class="facet-item"
+                  [class.facet-item--selected]="c.selected"
+                >
+                  <input
+                    type="checkbox"
+                    class="facet-checkbox"
+                    [checked]="c.selected"
+                    (click)="$event.preventDefault(); toggleCategory(c.value)"
+                  />
+                  <span class="facet-label">{{ c.label }}</span>
+                  <span class="facet-count">{{ c.count }}</span>
+                </label>
+              </li>
+            }
+          </ul>
+        } @else if (!loading && result) {
+          <p class="muted">No categories in this result set.</p>
+        }
+      </section>
+    </aside>
+
+    <main class="main">
+      @if (!loading && result && result.items.length === 0) {
+        <div class="empty">No products match your filters.</div>
+      }
+
+      @if (result?.items?.length) {
+        <ul class="grid">
+          @for (p of result!.items; track p.id) {
+            <li class="card">
+              <div class="thumb">
+                @if (p.imageUrl) {
+                  <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" />
+                } @else {
+                  <span class="thumb-placeholder">No image</span>
+                }
+              </div>
+              <div class="card-body">
+                <div class="card-title">{{ p.name }}</div>
+                @if (p.brand) {
+                  <div class="card-meta">{{ p.brand }}</div>
+                }
+                @if (p.categories.length) {
+                  <div class="card-tags">{{ p.categories.join(" · ") }}</div>
+                }
+              </div>
+            </li>
+          }
+        </ul>
+      }
+
+      @if (result && result.pagination.totalPages > 1) {
+        <nav class="pager" aria-label="Pagination">
+          <button
+            type="button"
+            class="btn"
+            (click)="goToPage(result.pagination.page - 1)"
+            [disabled]="result.pagination.page <= 1"
+          >
+            Previous
+          </button>
+          <span class="pager-meta">
+            Page {{ result.pagination.page }} of
+            {{ result.pagination.totalPages }} ·
+            {{ result.pagination.total }} results
+          </span>
+          <button
+            type="button"
+            class="btn"
+            (click)="goToPage(result.pagination.page + 1)"
+            [disabled]="result.pagination.page >= result.pagination.totalPages"
+          >
+            Next
+          </button>
+        </nav>
+      }
+    </main>
+  </div>
+</div>
