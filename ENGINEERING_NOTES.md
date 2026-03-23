@@ -37,7 +37,7 @@ At import (`scripts/src/importOpenFoodFacts.js`):
 - Categories use Open Food Facts `categories_tags` entries prefixed with `en:` so labels stay in the English taxonomy.
 - Brands use the `brands` string (first segment) or `brands_tags` as a fallback label.
 
-But there’s a bug here: a few entries in Cyrillic do get through the filters after all. One possible solution is to check for ASCII
+Some non-English entries might still get imported because Open Food Facts data isn’t always consistent. Stricter language checks during import could help fix this.
 
 ## Facet counts
 
