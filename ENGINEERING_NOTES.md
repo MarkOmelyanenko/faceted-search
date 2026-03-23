@@ -10,7 +10,7 @@ This document summarizes why the stack and data flow look the way they do, and w
 
 ## Why import locally instead of calling Open Food Facts on each search
 
-User searches would depend on a third-party API rate limits, timeouts, and schema changes - gives us **Latency and reliability**
+User searches would depend on a third-party API rate limits, timeouts, and schema changes - giving us **Latency and reliability**
 
 BUT there is a tradeoff: the data remains out of date, and this can be rectified through manual or scheduled imports; but for this project, a single data import is quite sufficient to demonstrate how faceted search works
 
