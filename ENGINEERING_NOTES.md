@@ -58,11 +58,10 @@ The Angular search box debounces input (~300ms) before writing `q` to the router
 
 ## How this could scale further
 
-| Direction              | Idea                                                                                                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Canonicalization**   | Richer rules (legal entity suffixes, alias tables).                                                                                                    |
-| **Reimport**           | Scheduled job (weekly/daily), idempotent upserts.                                                                                                      |
-| **Caching**            | Cache `GET /api/search` keyed by normalized query params or Redis.                                                                                     |
-| **Materialized views** | Use materialized views to speed up facet counts if some filters are used often and cause slow queries.                                                 |
+| Direction              | Idea                                                                                                                                          |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Canonicalization**   | Richer rules (legal entity suffixes, alias tables).                                                                                           |
+| **Reimport**           | Scheduled job (weekly/daily), idempotent upserts.                                                                                             |
+| **Caching**            | Cache `GET /api/search` keyed by normalized query params or Redis.                                                                            |
+| **Materialized views** | Use materialized views to speed up facet counts if some filters are used often and cause slow queries.                                        |
 | **Search engine**      | For better search (fewer typos, more languages, or very large databases), use a search engine like OpenSearch, Elasticsearch, or Meilisearch. |
-|
