@@ -4,15 +4,15 @@ This document summarizes why the stack and data flow look the way they do, and w
 
 ## Why Angular + Express + Supabase
 
-- **Angular**: I chose Angular because the UI Bakery team uses it on the frontend, and I wanted to familiarise myself further with the technology used in the product. First, I spent some time diving into it, specifically reading the [documentation](https://angular.dev/overview) and watching a few tutorials, for example [this one](https://www.youtube.com/watch?v=k5E2AVpwsko).
-- **Express**: As I already have some experience with Spring Boot (which is used by the UI Bakery team), I decided to look into Node.js (which also is used by the UI Bakery team), specifically Express, because it keeps the backend small and explicit. Aaand you can’t host Spring Boot on Vercel :)
-- **Supabase**: Assignment requirements :)
+- **Angular**: I chose Angular to stay close to the team’s frontend stack and to make the take-home solution more representative of the technologies used in production. First, I spent some time diving into it, specifically reading the [documentation](https://angular.dev/overview) and watching a few tutorials, for example [this one](https://www.youtube.com/watch?v=k5E2AVpwsko).
+- **Express**: As I already have some experience with Spring Boot (which is used by the UI Bakery team), I decided to look into Node.js (which also is used by the UI Bakery team), specifically Express, For the scope of this take-home, Express allowed me to keep the backend lightweight and focused on the search and filtering logic.
+- **Supabase**: Assignment requirements.
 
 ## Why import locally instead of calling Open Food Facts on each search
 
-User searches would depend on a third-party API rate limits, timeouts, and schema changes - giving us **Latency and reliability**
+User searches would depend on a third-party API rate limits, timeouts, and schema changes - giving us latency and reliability
 
-BUT there is a tradeoff: the data remains out of date, and this can be rectified through manual or scheduled imports; but for this project, a single data import is quite sufficient to demonstrate how faceted search works
+The tradeoff is that imported data may become stale over time. This can be rectified through manual or scheduled imports. But for this project, a single data import is quite sufficient to demonstrate how faceted search works
 
 ## Normalized schema
 
@@ -37,7 +37,7 @@ At import (`scripts/src/importOpenFoodFacts.js`):
 - Categories use Open Food Facts `categories_tags` entries prefixed with `en:` so labels stay in the English taxonomy.
 - Brands use the `brands` string (first segment) or `brands_tags` as a fallback label.
 
-Some non-English entries might still get imported because Open Food Facts data isn’t always consistent. Stricter language checks during import could help fix this.
+Some non-English entries might still get imported because Open Food Facts data isn’t always consistent. A stronger follow-up would be to add stricter Unicode script validation or a more conservative language filter during import.
 
 ## Facet counts
 
@@ -50,7 +50,7 @@ Main result list and total count still apply all filters (search + brand + categ
 
 ## Category sidebar vs full category search
 
-The database stores the full category graph for correctness. The default `/api/search` response only returns a small slice of categories. The sidebar displays the top categories, excluding those with low view counts, plus all selected categories; and if a selected category returns zero results, a human-readable name is still retrieved from the 'categories' table and '0' is displayed. That keeps the sidebar usable I think.
+The database stores the full category graph for correctness. The default `/api/search` response only returns a small slice of categories. The sidebar displays the top categories, excluding those with low product counts, plus all selected categories; and if a selected category returns zero results, a human-readable name is still retrieved from the 'categories' table and '0' is displayed. That keeps the sidebar usable I think.
 
 ## One more technical decision: debounced URL updates on the client
 
