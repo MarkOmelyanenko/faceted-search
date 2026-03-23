@@ -10,12 +10,12 @@ Small Amazon-style faceted search over a subset of [Open Food Facts](https://wor
 
 ## Stack
 
-| Layer    | Technology                                            |
-| -------- | ----------------------------------------------------- |
-| Frontend | Angular 19 (standalone), HttpClient, router URL state |
-| Backend  | Node.js 18+, Express                                  |
-| Database | Supabase                                              |
-| Import   | Node script calling Open Food Facts search API        |
+| Layer    | Technology                                     |
+| -------- | ---------------------------------------------- |
+| Frontend | Angular 19 (standalone)                        |
+| Backend  | Node.js 18+, Express                           |
+| Database | Supabase                                       |
+| Import   | Node script calling Open Food Facts search API |
 
 ## Repository layout
 
